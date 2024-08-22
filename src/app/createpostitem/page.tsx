@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 
 // initialState is declared locally and not exported
-const initialState = {
+export const initialState = {
     title: '',
     img: '',
     category: '',
