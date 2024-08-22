@@ -1,8 +1,6 @@
 'use client'
 
 import React, { useState } from 'react';
-
-// initialState is declared locally and not exported
 export const initialState = {
     title: '',
     img: '',
@@ -11,43 +9,47 @@ export const initialState = {
     brief: '',
     validate: '',
 };
-
 export default function CreatesItem() {
+
+
     const [text, setText] = useState(initialState);
 
-    const handleTextChange = (
-        e: React.ChangeEvent<HTMLInputElement> 
-        | React.ChangeEvent<HTMLTextAreaElement>
-    ) => {
-        const { name, value } = e.target;
-        setText({ ...text, [name]: value, validate: '' });
+    const handleTextChange=(e: 
+        React.ChangeEvent<HTMLInputElement> 
+        | React.ChangeEvent<HTMLTextAreaElement>)=>{
+        const {name, value} = e.target
+        setText({...text, [name]: value, validate: ''})
     };
 
     const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-        if (text.title === "" || text.img === "" || text.category === "" || text.brief === "") {
-            setText({ ...text, validate: 'incomplete' });
-            return;
+        //simple form validation
+        if(text.title === "" || text.img === "" || text.category === "" || text.brief === ""){
+            setText({...text, validate: 'incomplete'})
+            return;    
         }
 
+        //Send POST request
         try {
             const response = await fetch(`/api/postitems`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-type': 'application/json',
                 },
-                body: JSON.stringify(text),
-            });
+                body: JSON.stringify(text)
+            })
 
-            setText({ ...text, validate: 'loading' });
+            setText({...text, validate: 'loading' });
 
-            if (response.status === 201) {
-                setText({ ...text, validate: 'success' });
-                console.log('Success', response.status);
+            const result = response.status
+
+            if(result === 201){
+                setText({...text, validate: 'success'});
+                console.log('Success', result);
             }
-        } catch (error) {
-            setText({ ...text, validate: 'error' });
+
+        } catch(error) {
+            setText({...text, validate: 'error'});
             console.log('Error', error);
         }
     };
@@ -86,7 +88,7 @@ export default function CreatesItem() {
                                                     value={text.img}
                                                     onChange={handleTextChange}
                                                     className='form-control'
-                                                    placeholder='Enter Image URL'
+                                                    placeholder='Enter Image URl'
                                                 />
                                             </div>
                                             <div className='col-lg-6 mb-3'>
@@ -130,7 +132,7 @@ export default function CreatesItem() {
                                                     <div className='error-message'>Please fill in all above details.</div>
                                                 )}
                                                 {text.validate === 'success' && (
-                                                    <div className='sent-message'>Your news was posted successfully. Thank you!</div>
+                                                    <div className='sent-message'>Your news was posted successfull. Thank you!</div>
                                                 )}
                                                 {text.validate === 'error' && (
                                                     <div className='error-message'>Server Error</div>
